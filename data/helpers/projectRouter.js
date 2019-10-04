@@ -4,7 +4,7 @@ const project = require('./projectModel.js')
 
 const router = express.Router()
 //get all project
-router.get('/projects', (req, res) => {
+router.get('/', (req, res) => {
     project.get()
     .then(result => {
         res.status(200).json(result)
@@ -15,7 +15,7 @@ router.get('/projects', (req, res) => {
 })
 
 //get project actions
-router.get('/projects/:id', validatePost, (req, res) => {
+router.get('/:id', validatePost, (req, res) => {
     const {id} = req.params
     project.getProjectActions(id)
     .then(results => {
@@ -26,7 +26,7 @@ router.get('/projects/:id', validatePost, (req, res) => {
     })
 })
 //post a project
-router.post('/projects', (req, res) => {
+router.post('/', (req, res) => {
     const {name, description} = req.body
     if (!name || !description) {
         res.status(400).json({Error: 'You must provide both a name and description'})
@@ -41,7 +41,7 @@ router.post('/projects', (req, res) => {
     }
 })
 //delete a project
-router.delete("/projects/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
     const {id} = req.params
     project.remove(id)
     .then(result => {
@@ -53,12 +53,12 @@ router.delete("/projects/:id", (req, res) => {
 })
 
 //edit a project
-router.put("/projects/:id", validatePost, (req,res) => {
+router.put("/:id", validatePost, (req,res) => {
     const {name, description} = req.body
     if (!name || !description) {
         res.status(400).json({Error: 'You must provide both a name and description'})
     } else {
-        pdb.update(req.project, req.body)
+        project.update(req.project, req.body)
             .then(post => {
                 res.status(200).json(post)
             })
@@ -69,7 +69,7 @@ router.put("/projects/:id", validatePost, (req,res) => {
 })
 //check and see if the project exists
 function validatePost(req, res, next) {
-    pdb.get(req.params.id)
+    project.get(req.params.id)
         .then(got => {
             if (!got) {
                 res.status(400).json({Error: "there is no project with that id"})

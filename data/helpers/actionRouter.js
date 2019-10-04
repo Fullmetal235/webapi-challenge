@@ -5,7 +5,7 @@ const project = require('./projectModel.js');
  const router = express.Router()
 
  //get actions from id
-router.get('/actions/:id', validateaction, (req, res) => {
+router.get('/:id', validateaction, (req, res) => {
     actions.get(req.action)
         .then(action => {
             res.status(200).json(action)
@@ -16,7 +16,7 @@ router.get('/actions/:id', validateaction, (req, res) => {
 })
 
 //post an actions
-router.post("/projects/:id/actions", validatePost, (req, res) => {
+router.post("/:id/actions", validatePost, (req, res) => {
     const {description, notes} = req.body;
     req.body.project_id = req.project
     
@@ -34,8 +34,8 @@ router.post("/projects/:id/actions", validatePost, (req, res) => {
 })
 
 
-router.delete("/actions/:id", validateaction, (req, res) => {
-    adb.remove(req.action)
+router.delete("/:id", validateaction, (req, res) => {
+    actions.remove(req.action)
         .then(num => {
             res.status(200).json({Sucess: `${num} items were sucessfully deleted`})
         })
@@ -44,7 +44,7 @@ router.delete("/actions/:id", validateaction, (req, res) => {
         })
 })
 
-router.put("/actions/:id", validateaction, (req, res) => {
+router.put("/:id", validateaction, (req, res) => {
     const {description, notes} = req.body;
     if (!description || !notes) {
         res.status(400).json({Denied: `You must provide a description and notes`})
