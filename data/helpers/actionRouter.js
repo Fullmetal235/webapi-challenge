@@ -5,7 +5,7 @@ const project = require('./projectModel.js');
  const router = express.Router()
 
  //get actions from id
-router.get('/actionss/:id', validateactions, (req, res) => {
+router.get('/actions/:id', validateaction, (req, res) => {
     actions.get(req.action)
         .then(action => {
             res.status(200).json(action)
@@ -34,7 +34,7 @@ router.post("/projects/:id/actions", validatePost, (req, res) => {
 })
 
 
-router.delete("/actions/:id", validateAction, (req, res) => {
+router.delete("/actions/:id", validateaction, (req, res) => {
     adb.remove(req.action)
         .then(num => {
             res.status(200).json({Sucess: `${num} items were sucessfully deleted`})

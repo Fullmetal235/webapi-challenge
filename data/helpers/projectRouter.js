@@ -53,7 +53,7 @@ router.delete("/projects/:id", (req, res) => {
 })
 
 //edit a project
-server.put("/projects/:id", validatePost, (req,res) => {
+router.put("/projects/:id", validatePost, (req,res) => {
     const {name, description} = req.body
     if (!name || !description) {
         res.status(400).json({Error: 'You must provide both a name and description'})
