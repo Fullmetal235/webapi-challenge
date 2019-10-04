@@ -65,7 +65,7 @@ router.delete('/:id', (req, res) => {
     })
 });
 
-module.exports = router;
+
 //check and see if the project exists
 function validatePost(req, res, next) {
     project.get(req.params.id)
