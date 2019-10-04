@@ -26,13 +26,23 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+CRUD Operations and routes
+
 - [ ] Describe Middleware?
+
+middleware is a function that runs before another function to manipulate or validate data before passing it through
 
 - [ ] Describe a Resource?
 
+crud operations
+
 - [ ] What can the API return to help clients know if a request was successful?
 
+res.status(200)
+
 - [ ] How can we partition our application into sub-applications?
+
+useing routes, server.use, module.exports, and requires("")s
 
 ## Project Setup
 
