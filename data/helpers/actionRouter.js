@@ -1,13 +1,13 @@
 const express = require('express');
 
- const actions = require('./actionsModel.js');
+ const actions = require('./actionModel.js');
 const project = require('./projectModel.js');
  const router = express.Router()
 
  //get actions from id
 router.get('/actionss/:id', validateactions, (req, res) => {
     actions.get(req.action)
-        .then(actions => {
+        .then(action => {
             res.status(200).json(action)
         })
         .catch(() => {
@@ -34,15 +34,14 @@ router.post("/projects/:id/actions", validatePost, (req, res) => {
 })
 
 
-router.delete('/:id', (req, res) => {
-    const {id} = req.params
-    Data.remove(id)
-    .then(result => {
-        res.status(200).json({message: 'actions deleted succesfully'})
-    })
-    .catch(error => {
-        res.status(500).json({error: "The actions information could not be removed."})
-    })
+router.delete("/actions/:id", validateAction, (req, res) => {
+    adb.remove(req.action)
+        .then(num => {
+            res.status(200).json({Sucess: `${num} items were sucessfully deleted`})
+        })
+        .catch(() => {
+            res.status(500).json({Error: "there was an error deleteing the action from the database"})
+        })
 })
 
 router.put("/actions/:id", validateaction, (req, res) => {
