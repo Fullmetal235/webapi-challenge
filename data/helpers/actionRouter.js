@@ -1,105 +1,90 @@
-//GET Request
- server.get('/api/users', (req, res) => {
-    db.find()
-        .then(users => {
-            res.status(200).json(users)
+const express = require('express');
+
+ const actions = require('./actionsModel.js');
+const project = require('./projectModel.js');
+ const router = express.Router()
+
+ //get actions from id
+router.get('/actionss/:id', validateactions, (req, res) => {
+    actions.get(req.action)
+        .then(actions => {
+            res.status(200).json(action)
         })
-        .catch(err => {
-            res.status(500).json({
-                err: err,
-                message: 'The users information could not be retrieved.'                      
-            });
-        });
-});
-//GET Request with certain user
-server.get('/api/users/:id', (req, res) => {
-    const {id} = req.params;
-    db.findById(id)
-        .then(user => {
-            if(user) {
-                res.json(user)
-            } 
-            else {
-                res.status(404).json({
-                    message: 'The user with the specified ID does not exist.'
-                });
-            };
-        })
-        .catch(err => {
-            res.status(500).json({
-                err: err,
-                message: 'The user information could not be retrieved.'
-            });
-        });
-});
-//POST Request
-server.post('/api/users', (req, res) => {
-    const {name, bio} = req.body;
-    db.insert(req.body)
-        .then(user => {
-            if(user) {
-                res.status(201).json(user);
-            }
-            else {
-                res.status(400).json({
-                    message: 'Please provide a name and bio for the user.'
-                });
-            };
-        })
-        .catch(err => {
-            res.status(500).json({
-                err: err,
-                message: 'There was an error saving user to the database.'
-            });
-        });
-});
-//PUT Request
-server.put('/api/users/:id', (req, res) => {
-    const {id} = req.params;
-    const {name, bio} = req.body;
-    if(name && bio) {
-        db.update(id, req.body)
-            .then(updatedUser => {
-                if(updatedUser) {
-                    res.status(200).json(updatedUser);
-                }
-                else {
-                    res.status(404).json({
-                        message: 'The user with the specified ID does not exist.'
-                    });
-                };
-            })
-            .catch(err => {
-                res.status(500).json({
-                    err: err,
-                    message: 'The user information could not be modified.'
-                });
-            });
-    }
-    else {
-        res.status(400).json({
-            message: 'Please provide a name and bio for the user.'
-        });
-    };
-});
-//DELETE Request
-server.delete('/api/users/:id', (req, res) => {
-    const {id} = req.params;
-    db.remove(id)
-        .then(deletedUser => {
-            if(deletedUser) {
-                res.status(200).json(deletedUser);
-            }
-            else {
-                res.status(404).json({
-                    message: 'The user with the specified ID does not exist.'
-                });
-            };
-        })
-        .catch(err => {
-            res.status(500).json({
-                err: err,
-                message: 'The user could not be removed.'
-            })
+        .catch(() => {
+            res.status(500).json({Error: 'could not retrive the actions from the database'})
         })
 })
+
+//post an actions
+router.post("/projects/:id/actions", validatePost, (req, res) => {
+    const {description, notes} = req.body;
+    req.body.project_id = req.project
+    
+    if (!description || !notes) {
+        res.status(400).json({Denied: `You must provide a description and notes`})
+    } else {
+        actions.insert(req.body)
+            .then(action => {
+                res.status(201).json(action)
+            })
+            .catch(err => {
+                res.status(500).json({Error: 'there was an issue createing the actions for the project'})
+            })
+    }
+})
+
+
+router.delete('/:id', (req, res) => {
+    const {id} = req.params
+    Data.remove(id)
+    .then(result => {
+        res.status(200).json({message: 'actions deleted succesfully'})
+    })
+    .catch(error => {
+        res.status(500).json({error: "The actions information could not be removed."})
+    })
+})
+
+router.put("/actions/:id", validateaction, (req, res) => {
+    const {description, notes} = req.body;
+    if (!description || !notes) {
+        res.status(400).json({Denied: `You must provide a description and notes`})
+    } else (
+        actions.update(req.action, req.body)
+            .then(action => {
+                res.status(200).json(action)
+            })
+            .catch(() => {
+                res.status(500).json({Error: 'there was an error updateing the actions'})
+            })
+    )
+})
+
+//check and see if the project exists
+function validatePost(req, res, next) {
+    project.get(req.params.id)
+        .then(got => {
+            if (!got) {
+                res.status(400).json({Error: "there is no project with that id"})
+            } else {
+                req.project = req.params.id
+                next()
+            }
+        })
+}
+
+function validateaction(req, res, next) {
+    actions.get(req.params.id)
+        .then(got => {
+            if (!got) {
+                res.status(400).json({Error: "there is no actions with that id"})
+            } else {
+                req.body.project_id = got.project_id
+                req.action = req.params.id
+                next()
+            }
+        })
+}
+
+
+ module.exports = router
